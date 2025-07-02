@@ -5,6 +5,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MICROSERVICES_CLIENTS } from './constant';
 import { OrdersController } from './orders/orders.controller';
 import { AuthController } from './auth/auth.controller';
+import { readFileSync } from 'fs';
 
 @Module({
   imports: [
@@ -12,7 +13,14 @@ import { AuthController } from './auth/auth.controller';
       {
         name: MICROSERVICES_CLIENTS.ORDERS_SERVICE,
         transport: Transport.TCP,
-        options: { port: 4001 }
+        options: {
+          port: 4001,
+          tlsOptions: {
+          key: readFileSync("../../certs/client.key"),
+          cert: readFileSync("../../certs/client.cert"),
+          ca: readFileSync("../../certs/ca.cert")
+        }
+        }
       },
       {
         name: MICROSERVICES_CLIENTS.PRODUCTS_SERVICE,
