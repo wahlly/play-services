@@ -1,0 +1,16 @@
+import { Body, Controller, Inject, Post } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
+
+@Controller('auth')
+export class AuthController {
+      constructor(
+            @Inject("AUTH_SERVICE") private readonly authClient: ClientProxy
+      ){}
+
+      @Post('login')
+      async login(@Body() body: {username: string, password: string}) {
+            const token = await firstValueFrom(this.authClient.send("auth-login", body))
+            return token
+      }
+}
